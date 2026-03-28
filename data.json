@@ -1,0 +1,16 @@
+{
+  "rating": 5,
+  "total": 337,
+  "reviews": [
+    {
+      "nume": "Client Logimaetics 1",
+      "text": "Servicii excelente de instalatii electrice in Timisoara!",
+      "stele": 5
+    },
+    {
+      "nume": "Client Logimaetics 2",
+      "text": "Profesionalism si promptitudine. Recomand cu incredere.",
+      "stele": 5
+    }
+  ]
+}
