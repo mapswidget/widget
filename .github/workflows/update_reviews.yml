@@ -4,28 +4,29 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write  # Aceasta este linia magică ce repară eroarea 128
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Am trecut la v4
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }} # Folosim token-ul tau special
+          
       - name: Setup Node
-        uses: actions/setup-node@v4 # Am trecut la v4
+        uses: actions/setup-node@v4
         with: 
-          node-version: '24' # Am trecut la Node 24 conform cerintei GitHub
+          node-version: '24'
+          
       - run: npm install axios
       - run: node fetch_reviews.js
         env:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           GOOGLE_PLACE_ID: ${{ secrets.GOOGLE_PLACE_ID }}
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+          
       - name: Commit and Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data.json
           git commit -m "Update reviews" || exit 0
-          git push
+          git push origin main
