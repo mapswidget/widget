@@ -8,25 +8,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_TOKEN }} # Folosim token-ul tau special
-          
+          persist-credentials: false # Dezactivam metoda veche care da eroarea 128
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with: 
           node-version: '24'
-          
-      - run: npm install axios
-      - run: node fetch_reviews.js
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Fetch Reviews
+        run: node fetch_reviews.js
         env:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           GOOGLE_PLACE_ID: ${{ secrets.GOOGLE_PLACE_ID }}
-          
+
       - name: Commit and Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data.json
+          # Folosim token-ul tau special direct in URL-ul de push pentru a forta scrierea
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
           git commit -m "Update reviews" || exit 0
           git push origin main
