@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # Foarte important pentru a salva datele
     steps:
       - uses: actions/checkout@v4
 
@@ -16,9 +16,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24' # Am trecut la versiunea noua ceruta de GitHub
-
-      - name: Install Dependencies
-        run: npm install axios # Ne asiguram ca axios este instalat
 
       - name: Fetch and Save
         run: node fetch_reviews.js
