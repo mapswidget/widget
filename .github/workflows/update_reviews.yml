@@ -1,19 +1,34 @@
-name: Test Google Connection
+name: Update Google Reviews
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Rulează automat în fiecare noapte
+  workflow_dispatch: # Îți permite să îl pornești tu manual
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Îi dă voie robotului să salveze fișierul data.json
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
-        with: 
-          node-version: '24'
+        with:
+          node-version: '20'
+
       - run: npm install axios
-      - name: Fetch and Show
+
+      - name: Fetch and Save
         run: node fetch_reviews.js
         env:
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           GOOGLE_PLACE_ID: ${{ secrets.GOOGLE_PLACE_ID }}
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data.json
+          git commit -m "Update reviews automatically" || echo "No changes to commit"
+          git push
