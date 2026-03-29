@@ -1,23 +1,24 @@
 name: Update Google Reviews
 on:
   schedule:
-    - cron: '0 0 * * *' # Rulează automat în fiecare noapte
-  workflow_dispatch: # Îți permite să îl pornești tu manual
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Îi dă voie robotului să salveze fișierul data.json
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24' # Am trecut la versiunea noua ceruta de GitHub
 
-      - run: npm install axios
+      - name: Install Dependencies
+        run: npm install axios # Ne asiguram ca axios este instalat
 
       - name: Fetch and Save
         run: node fetch_reviews.js
